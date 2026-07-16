@@ -230,3 +230,9 @@ main { flex: 1; } /* Pushes footer down when page is empty */
 
 @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
 @keyframes fadeOut { to { opacity: 0; transform: translateY(10px); } }
+/* Make dropdown items darker on hover */
+.dropdown-content a:hover {
+    background-color: #e2e8f0; /* A nice, subtle slate gray */
+    color: var(--primary-blue); /* Keeps the text crisp and branded */
+    transition: background-color 0.2s ease; /* Adds a smooth fade effect */
+}

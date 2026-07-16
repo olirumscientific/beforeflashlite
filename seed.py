@@ -61,6 +61,24 @@ try:
     # 3. Add all products into the array matrix
     products = [
         # --- CATEGORY 1: CELLULAR ASSAYS ---
+        
+        Product(
+            name="FAVA (Fluorescent Assay for Viability)", 
+            price=8500.00, 
+            category_id=cat1.id,
+            description="High-throughput cellular viability and cytotoxicity assay.",
+            specs_html="""
+                <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
+                <p>FAVA provides a rapid, sensitive, and safe alternative to traditional MTT assays. The proprietary fluorescent dye only penetrates cells with compromised plasma membranes, allowing for exact quantification of dead vs. live cells in a given population.</p>
+            """,
+            protocol_html="""
+                <p style="margin-bottom: 15px;">Add 10 µl of FAVA reagent directly to 100 µl of cell culture media in a 96-well plate. Incubate for 1-2 hours at 37°C. No cell lysis or aspiration required. Read fluorescence at 560/590 nm.</p>
+            """,
+            support_html="""
+                <p><strong>Interference:</strong> Strongly colored compounds (like high concentrations of phenol red) may slightly quench the fluorescent signal. Consider running a background control with media only.</p>
+            """,
+            download_link="/downloads/fava-protocol.pdf"
+        ),
         Product(
     name="DCFDA based ROS Detection Kit", 
     price=12500.00, 
@@ -104,28 +122,11 @@ try:
     """,
     download_link="/downloads/dcfda-protocol.pdf"
 ),
-        Product(
-            name="FAVA (Fluorescent Assay for Viability)", 
-            price=8500.00, 
-            category_id=cat1.id,
-            description="High-throughput cellular viability and cytotoxicity assay.",
-            specs_html="""
-                <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
-                <p>FAVA provides a rapid, sensitive, and safe alternative to traditional MTT assays. The proprietary fluorescent dye only penetrates cells with compromised plasma membranes, allowing for exact quantification of dead vs. live cells in a given population.</p>
-            """,
-            protocol_html="""
-                <p style="margin-bottom: 15px;">Add 10 µl of FAVA reagent directly to 100 µl of cell culture media in a 96-well plate. Incubate for 1-2 hours at 37°C. No cell lysis or aspiration required. Read fluorescence at 560/590 nm.</p>
-            """,
-            support_html="""
-                <p><strong>Interference:</strong> Strongly colored compounds (like high concentrations of phenol red) may slightly quench the fluorescent signal. Consider running a background control with media only.</p>
-            """,
-            download_link="/downloads/fava-protocol.pdf"
-        ),
         Product(name="Calcein AM", price=180.00, category_id=cat1.id, description="Calcein AM placeholder description."),
         
         # --- CATEGORY 2: MICROSCOPY ---
         Product(
-            name="Premium Mounting Media", 
+            name="Nova", 
             price=4200.00, 
             category_id=cat2.id,
             description="Anti-fade reagent for prolonged fluorescence preservation.",
@@ -146,7 +147,49 @@ try:
             """,
             download_link="/downloads/mounting-media-specs.pdf"
         ),
-        Product(name="Supernova", price=850.00, category_id=cat2.id, description="Supernova placeholder description."),
+        Product(
+            name="Supernova", 
+            price=850.00, 
+            category_id=cat2.id,
+            description="Self-sealing, hard-setting anti-fade mounting media retaining fluorescence for >5 months.",
+            specs_html="""
+                <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
+                <p style="margin-bottom: 15px;"><strong>Supernova</strong> is a premium self-sealing, hard-setting anti-fade mounting media. Unlike liquid media that require manual sealing with adhesives, Supernova cures into a hardened state, retaining vivid specimen fluorescence for over 5 months from the date of preparation.</p>
+                
+                <h4 style="margin-bottom: 10px; color: var(--dark-slate);">Engineered for Optical Excellence</h4>
+                <p style="margin-bottom: 10px;">Supernova was developed to meet all stringent criteria for high-performance mounting media:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Optics:</strong> Refractive index close to glass (~1.5), perfectly transparent, and color-free.</li>
+                    <li><strong>Integrity:</strong> Dries to a non-tacky state without crystallizing, cracking, shrinking, or pulling away from coverslip edges.</li>
+                    <li><strong>Protection:</strong> Resists microbial growth, oxidation, and pH shifts without damaging or altering delicate tissue components or stains.</li>
+                </ul>
+            """,
+            protocol_html="""
+                <h4 style="margin-bottom: 8px; color: var(--dark-slate);">1. Mounting Procedure</h4>
+                <ol style="margin-left: 20px; margin-bottom: 20px;">
+                    <li>Carefully drain excess liquid from the coverslip containing the fixed or stained cells. <em>(Do not let the specimen dry completely).</em></li>
+                    <li>Place an appropriate drop of mounting medium onto a clean glass slide. Adjust volume according to coverslip size to avoid overflow.</li>
+                    <li>Gently invert the coverslip (cell side facing down) onto the drop of the mounting medium, taking care to avoid air bubble formation.</li>
+                </ol>
+
+                <h4 style="margin-bottom: 8px; color: var(--dark-slate);">2. Curing Conditions</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Standard Curing:</strong> ~1 hour at room temperature in the dark (when humidity is below 75%).</li>
+                    <li><strong>Accelerated Curing:</strong> Place slides in a dehumidified chamber.</li>
+                    <li><strong>Imaging:</strong> Can begin after 1 hour of setting time. For improved stability and maximum fluorescence preservation, leave slides at room temperature for ≥8 hours before imaging.</li>
+                </ul>
+            """,
+            support_html="""
+                <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Notes & Troubleshooting</h3>
+                <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.6;">
+                    <li><strong>Photobleaching Prevention:</strong> Always perform mounting and curing steps in low light or complete darkness.</li>
+                    <li><strong>Environmental Factors:</strong> Humidity significantly affects curing time. Use a dry or dehumidified environment for consistent, rapid results. Do not disturb slides during curing.</li>
+                    <li><strong>Volume Control:</strong> Excess mounting medium can lead to leakage or slow curing. Use the optimal volume for your specific coverslip dimensions.</li>
+                    <li><strong>Fluorophore Compatibility:</strong> Ensure your specific experimental fluorophores are compatible with hard-setting mountants prior to large-scale applications.</li>
+                </ul>
+            """,
+            download_link="/downloads/supernova-datasheet.pdf"
+        ),
         
         # --- CATEGORY 3: MYCOPLASMA ---
         Product(
