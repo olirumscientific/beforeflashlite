@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Olirum Scientific</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-slate); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: 'Inter', sans-serif; }
+        .form-group textarea { height: 120px; resize: vertical; }
+        .btn-submit { background: var(--primary-blue); color: white; padding: 12px 24px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; }
+        .btn-submit:hover { background: var(--accent-blue); }
+    </style>
+</head>
+<body style="background-color: #f8fafc;">
+
+    <!-- Minimal Navbar for Admin -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <a href="index.html" style="text-decoration: none; color: var(--primary-blue);">← Back to Storefront</a>
+        </div>
+        <h2 style="color: var(--dark-slate); margin: 0;">Catalog Manager</h2>
+    </header>
+
+    <div class="admin-container">
+        <h2 style="margin-bottom: 25px; color: var(--primary-blue);">Add New Product</h2>
+        
+        <form id="addProductForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label>Product Name *</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Price (₹) *</label>
+                    <input type="number" id="price" step="0.01" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Category *</label>
+                <select id="category_id" required>
+                    <option value="1">Cellular Assays</option>
+                    <option value="2">Microscopy</option>
+                    <option value="3">Mycoplasma</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Short Description</label>
+                <input type="text" id="description" placeholder="Brief 1-sentence overview">
+            </div>
+
+            <div class="form-group">
+                <label>Product Overview (HTML allowed)</label>
+                <textarea id="specs_html" placeholder="<p>Your content here...</p>"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Method & Protocol (HTML allowed)</label>
+                <textarea id="protocol_html" placeholder="<ol><li>Step 1</li></ol>"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Troubleshooting & Support (HTML allowed)</label>
+                <textarea id="support_html" placeholder="<p>Support info...</p>"></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Save Product to Database</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('addProductForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevent page reload
+            
+            const btn = document.querySelector('.btn-submit');
+            btn.innerText = "Saving...";
+
+            // Gather the data from the form
+            const productData = {
+                name: document.getElementById('name').value,
+                price: parseFloat(document.getElementById('price').value),
+                category_id: parseInt(document.getElementById('category_id').value),
+                description: document.getElementById('description').value,
+                specs_html: document.getElementById('specs_html').value,
+                protocol_html: document.getElementById('protocol_html').value,
+                support_html: document.getElementById('support_html').value
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData)
+                });
+
+                if (response.ok) {
+                    alert("Product successfully added to the database!");
+                    document.getElementById('addProductForm').reset(); // Clear form
+                } else {
+                    alert("Error adding product. Check server console.");
+                }
+            } catch (error) {
+                alert("Could not connect to the server.");
+            } finally {
+                btn.innerText = "Save Product to Database";
+            }
+        });
+    </script>
+</body>
+</html>

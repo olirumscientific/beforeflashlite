@@ -1,4 +1,24 @@
 # main.py
+#############################################
+#dashboard thing
+from database import Product
+from pydantic import BaseModel
+from typing import Optional
+
+# This tells FastAPI exactly what data to expect from your Admin Dashboard
+class ProductCreate(BaseModel):
+    name: str
+    price: float
+    category_id: int
+    description: Optional[str] = None
+    specs_html: Optional[str] = None
+    protocol_html: Optional[str] = None
+    support_html: Optional[str] = None
+    download_link: Optional[str] = None
+#############################################
+
+
+
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -61,6 +81,14 @@ def get_categories(db: Session = Depends(get_db)):
 @app.get("/products")
 def get_products(db: Session = Depends(get_db)):
     return db.query(database.Product).all()
+@app.post("/products")
+def create_product(product: ProductCreate, db: Session = Depends(get_db)):
+    # Create a new database row using the data from the dashboard
+    new_product = Product(**product.dict())
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
+    return {"message": "Product added successfully!", "product_id": new_product.id}
 
 # --- EMAIL FUNCTION ---
 def send_quote_email(buyer_email: str, quote_id: int, items_text: str, company: str):
