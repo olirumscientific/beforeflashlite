@@ -66,16 +66,44 @@ try:
             name="FAVA (Fluorescent Assay for Viability)", 
             price=8500.00, 
             category_id=cat1.id,
-            description="High-throughput cellular viability and cytotoxicity assay.",
+            description="High-throughput cellular viability assay utilizing cell-permeable fluorogenic dyes.",
             specs_html="""
                 <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
-                <p>FAVA provides a rapid, sensitive, and safe alternative to traditional MTT assays. The proprietary fluorescent dye only penetrates cells with compromised plasma membranes, allowing for exact quantification of dead vs. live cells in a given population.</p>
+                <p style="margin-bottom: 15px;">This assay utilizes a cell-permeable fluorogenic dye that is converted by intracellular esterases into highly fluorescent calcein within live cells, providing a robust, direct indicator of cell viability.</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>Excitation / Emission:</strong> 490 nm / 525 nm</li>
+                    <li><strong>Recommended Working Concentration:</strong> 0.5 µM</li>
+                    <li><strong>Applications:</strong> Microplate reader assays and Epifluorescence microscopy</li>
+                </ul>
             """,
             protocol_html="""
-                <p style="margin-bottom: 15px;">Add 10 µl of FAVA reagent directly to 100 µl of cell culture media in a 96-well plate. Incubate for 1-2 hours at 37°C. No cell lysis or aspiration required. Read fluorescence at 560/590 nm.</p>
+                <h4 style="margin-bottom: 5px; color: var(--dark-slate);">1. Reagent Preparation</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Stock Solution (1 mM):</strong> Reconstitute the 50 µg vial with 50 µL Dimethyl sulfoxide (DMSO). Mix gently until completely dissolved. Aliquot if necessary and store at −20°C protected from light. Avoid repeated freeze–thaw cycles.</li>
+                    <li><strong>Working Solution (0.5 µM):</strong> Dilute 1 µL of 1 mM stock into 1999 µL assay buffer, PBS, or serum-free culture medium immediately before use. Protect from light.</li>
+                </ul>
+
+                <h4 style="margin-bottom: 5px; color: var(--dark-slate);">2. 96-Well Plate Fluorescence Assay</h4>
+                <ol style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Cell Seeding:</strong> Seed cells at densities of 1 × 10³ – 5 × 10⁵ cells/mL (100 µL per well). Incubate overnight for adherent cell lines to attach.</li>
+                    <li><strong>Dye Loading:</strong> Remove culture medium if required. Add 100 µL fresh assay buffer, then add the working solution to achieve a final well concentration of 0.5 µM.</li>
+                    <li><strong>Incubation:</strong> Incubate the plate at 37°C for 30 minutes in the dark. <em>(Typical optimal range: 20 minutes to 1 hour).</em></li>
+                    <li><strong>Washing:</strong> Remove dye-containing buffer. Wash cells 1–2 times with indicator-free assay buffer to remove excess probe.</li>
+                    <li><strong>Measurement:</strong> Record fluorescence intensity using a microplate reader (Excitation: 490 nm | Emission: 525 nm | Cutoff: 515 nm).</li>
+                </ol>
             """,
             support_html="""
-                <p><strong>Interference:</strong> Strongly colored compounds (like high concentrations of phenol red) may slightly quench the fluorescent signal. Consider running a background control with media only.</p>
+                <h4 style="margin-bottom: 5px; color: var(--dark-slate);">Notes & Optimization</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Background Interference:</strong> Phenol red and serum esterases in standard culture media may contribute to background fluorescence. Using clear, serum-free buffers is highly recommended during measurement.</li>
+                    <li><strong>Protocol Adjustments:</strong> Optimal incubation time varies heavily depending on cell type and density. Note that lower incubation temperatures may reduce proper dye compartmentalization.</li>
+                </ul>
+
+                <h4 style="margin-bottom: 5px; color: var(--dark-slate);">Quality Control Representative Results</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.6;">
+                    <li><strong>Figure 1 (Microplate):</strong> Viable cells assessed via plate reader show distinct fluorescence intensity peaks at Ex: 490 nm / Em: 525 nm.</li>
+                    <li><strong>Figure 2 (Microscopy):</strong> Epifluorescence images demonstrate live cells displaying green fluorescence due to successful intracellular conversion to calcein. (When counterstained with Hoechst, nuclei can be pseudocolored red for morphological clarity using appropriate filter sets).</li>
+                </ul>
             """,
             download_link="/downloads/fava-protocol.pdf"
         ),
@@ -122,7 +150,51 @@ try:
     """,
     download_link="/downloads/dcfda-protocol.pdf"
 ),
-        Product(name="Calcein AM", price=180.00, category_id=cat1.id, description="Calcein AM placeholder description."),
+        Product(
+            name="Calcein AM", 
+            price=180.00, 
+            category_id=cat1.id,
+            description="Reliable and efficient live-cell viability detection suitable for drug screening and toxicity studies.",
+            specs_html="""
+                <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
+                <p style="margin-bottom: 15px;">This assay utilizes a cell-permeable fluorogenic dye that is converted by intracellular esterases into highly fluorescent calcein within live cells, providing a robust, direct indicator of cell viability.</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>Excitation / Emission:</strong> 490 nm / 525 nm</li>
+                    <li><strong>Recommended Working Concentration:</strong> 0.5 µM</li>
+                    <li><strong>Applications:</strong> Microplate reader assays and Epifluorescence microscopy</li>
+                </ul>
+            """,
+            protocol_html="""
+                <h4 style="margin-bottom: 5px; color: var(--dark-slate);">1. Reagent Preparation</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Stock Solution (1 mM):</strong> Reconstitute the 50 µg vial with 50 µL Dimethyl sulfoxide (DMSO). Mix gently until completely dissolved. Aliquot if necessary and store at −20°C protected from light. Avoid repeated freeze–thaw cycles.</li>
+                    <li><strong>Working Solution (0.5 µM):</strong> Dilute 1 µL of 1 mM stock into 1999 µL assay buffer, PBS, or serum-free culture medium immediately before use. Protect from light.</li>
+                </ul>
+
+                <h4 style="margin-bottom: 5px; color: var(--dark-slate);">2. 96-Well Plate Fluorescence Assay</h4>
+                <ol style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Cell Seeding:</strong> Seed cells at densities of 1 × 10³ – 5 × 10⁵ cells/mL (100 µL per well). Incubate overnight for adherent cell lines to attach.</li>
+                    <li><strong>Dye Loading:</strong> Remove culture medium if required. Add 100 µL fresh assay buffer, then add the working solution to achieve a final well concentration of 0.5 µM.</li>
+                    <li><strong>Incubation:</strong> Incubate the plate at 37°C for 30 minutes in the dark. <em>(Typical optimal range: 20 minutes to 1 hour).</em></li>
+                    <li><strong>Washing:</strong> Remove dye-containing buffer. Wash cells 1–2 times with indicator-free assay buffer to remove excess probe.</li>
+                    <li><strong>Measurement:</strong> Record fluorescence intensity using a microplate reader (Excitation: 490 nm | Emission: 525 nm | Cutoff: 515 nm).</li>
+                </ol>
+            """,
+            support_html="""
+                <h4 style="margin-bottom: 5px; color: var(--dark-slate);">Notes & Optimization</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Background Interference:</strong> Phenol red and serum esterases in standard culture media may contribute to background fluorescence. Using clear, serum-free buffers is highly recommended during measurement.</li>
+                    <li><strong>Protocol Adjustments:</strong> Optimal incubation time varies heavily depending on cell type and density. Note that lower incubation temperatures may reduce proper dye compartmentalization.</li>
+                </ul>
+
+                <h4 style="margin-bottom: 5px; color: var(--dark-slate);">Quality Control Representative Results</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.6;">
+                    <li><strong>Figure 1 (Microplate):</strong> Viable cells assessed via plate reader show distinct fluorescence intensity peaks at Ex: 490 nm / Em: 525 nm.</li>
+                    <li><strong>Figure 2 (Microscopy):</strong> Epifluorescence images demonstrate live cells displaying green fluorescence due to successful intracellular conversion to calcein. (When counterstained with Hoechst, nuclei can be pseudocolored red for morphological clarity using appropriate filter sets).</li>
+                </ul>
+            """,
+            download_link="/downloads/calcein-am-protocol.pdf"
+        ),
         
         # --- CATEGORY 2: MICROSCOPY ---
         Product(
