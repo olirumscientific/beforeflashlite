@@ -129,6 +129,7 @@ def archive_product(product_id: int, db: Session = Depends(get_db)):
     return {"message": f"Product {product_id} archived successfully"}
 
 # --- EMAIL FUNCTION ---
+# --- EMAIL FUNCTION ---
 def send_quote_email(quote_id: int, quote: QuoteSubmit, items_text: str):
     msg = MIMEMultipart()
     msg['From'] = SENDER_EMAIL
@@ -157,6 +158,9 @@ The Olirum Scientific Team
 """
     msg.attach(MIMEText(body, 'plain'))
 
+    # Default status before trying
+    email_status = "Pending"
+
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
@@ -171,8 +175,37 @@ The Olirum Scientific Team
         server.send_message(msg)
         
         server.quit()
+        email_status = "Email Sent" # Success!
+        
     except Exception as e:
         print(f"Failed to send email: {e}")
+        email_status = "Email Failed" # Network drop or SMTP error
+        
+    finally:
+        # OPEN A FRESH DB SESSION IN THE BACKGROUND THREAD
+        db = database.SessionLocal()
+        try:
+            db_quote = db.query(database.QuoteRequest).filter(database.QuoteRequest.id == quote_id).first()
+            if db_quote:
+                # Update the database with the final outcome
+                db_quote.status = email_status
+                db.commit()
+        except Exception as db_e:
+            print(f"Database update failed in background task: {db_e}")
+        finally:
+            db.close()
+@app.get("/admin/quotes")
+def get_admin_quotes(
+    db: Session = Depends(get_db), 
+    x_admin_token: str = Header(None)
+):
+    correct_password = os.getenv("ADMIN_PASSWORD")
+    if x_admin_token != correct_password:
+        raise HTTPException(status_code=401, detail="Unauthorized: Invalid Admin Password")
+    
+    # Fetches all quotes, ordering them so the newest ones are at the top
+    quotes = db.query(database.QuoteRequest).order_by(database.QuoteRequest.id.desc()).all()
+    return quotes
 
 # --- QUOTE SUBMISSION ---
 @app.post("/api/quotes")

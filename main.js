@@ -355,7 +355,7 @@ function renderCartPage() {
         <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Lead Details</h3>
         
         <!-- ADD THIS FORM TAG -->
-        <form id="quote-form" onsubmit="event.preventDefault(); submitQuote();">
+        <form id="quote-form" onsubmit="submitQuote();">
             <div class="form-group" style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Full Name / PI Name *</label>
                 <input type="text" id="buyer-name" placeholder="Dr. Jane Doe" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
@@ -483,7 +483,8 @@ async function submitQuote(event) {
             
             // 3. Clear cart and update UI
             quoteCart = []; 
-            updateCartCount();
+            localStorage.setItem('quoteCart', JSON.stringify(quoteCart));
+            updateCartBadge();
             
             // 4. FIXED TYPO: Must be renderCartPage(), not renderCart()
             renderCartPage(); 

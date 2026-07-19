@@ -58,6 +58,7 @@ class QuoteRequest(Base):
     company = Column(String, nullable=True)
     city = Column(String, nullable=False)
     pincode = Column(String, nullable=False)
+    status = Column(String, default="Pending")
 
     # This links the quote request to the specific items ordered
     items = relationship("QuoteItem", back_populates="quote")
