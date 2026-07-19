@@ -355,7 +355,7 @@ function renderCartPage() {
         <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Lead Details</h3>
         
         <!-- ADD THIS FORM TAG -->
-        <form id="quote-form" onsubmit="submitQuote();">
+        <form id="quote-form" onsubmit="submitQuote(event);">
             <div class="form-group" style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Full Name / PI Name *</label>
                 <input type="text" id="buyer-name" placeholder="Dr. Jane Doe" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
@@ -455,6 +455,13 @@ async function submitQuote(event) {
         return;
     }
 
+    // --- NEW: Disable button and show loading state ---
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Sending...";
+    submitBtn.style.background = '#cbd5e1'; // Gray out the button
+    // --------------------------------------------------
+
     const payload = {
         name: name,
         email: email,
@@ -486,14 +493,22 @@ async function submitQuote(event) {
             localStorage.setItem('quoteCart', JSON.stringify(quoteCart));
             updateCartBadge();
             
-            // 4. FIXED TYPO: Must be renderCartPage(), not renderCart()
+            // 4. Re-render the page (this automatically resets the button state)
             renderCartPage(); 
         } else {
             showToast("Failed to submit quote.", "error");
+            // --- NEW: Re-enable button on failure ---
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Request";
+            submitBtn.style.background = 'var(--primary-blue)';
         }
     } catch (error) {
         console.error("Error submitting quote:", error);
         showToast("Network error. Please try again.", "error");
+        // --- NEW: Re-enable button on failure ---
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit Request";
+        submitBtn.style.background = 'var(--primary-blue)';
     }
 }
 
