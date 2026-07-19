@@ -1,5 +1,7 @@
 // --- GLOBAL STATE ---
 const API_URL = 'http://127.0.0.1:8000';
+// Add this at the very top of your main.js file
+const API_BASE_URL = 'http://127.0.0.1:8000';
 let quoteCart = JSON.parse(localStorage.getItem('quoteCart')) || [];
 let allProductsCache = []; 
 
@@ -349,50 +351,62 @@ function renderCartPage() {
             </section>
             
             <aside class="cart-sidebar">
-                <div class="cart-container" style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Lead Details</h3>
-                    
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Full Name / PI Name *</label>
-                        <input type="text" id="buyer-name" placeholder="Dr. Jane Doe" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
-                    </div>
-                    
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Official Email *</label>
-                        <input type="email" id="buyer-email" placeholder="lab@institution.edu" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
-                    </div>
-                    
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Institution / Company</label>
-                        <input type="text" id="buyer-company" placeholder="e.g. IISER Pune" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 20px;">
-                        <div class="form-group">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">City *</label>
-                            <input type="text" id="buyer-city" placeholder="City" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
-                        </div>
-                        <div class="form-group">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Pincode *</label>
-                            <input type="text" id="buyer-pincode" placeholder="Pincode" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
-                        </div>
-                    </div>
-
-                    <button id="submit-btn" onclick="submitQuote()" style="width: 100%; background: var(--primary-blue); color: white; padding: 14px; border: none; border-radius: 4px; font-weight: 600; font-size: 1rem; cursor: pointer;">
-                        Submit Request
-                    </button>
+    <div class="cart-container" style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Lead Details</h3>
+        
+        <!-- ADD THIS FORM TAG -->
+        <form id="quote-form" onsubmit="event.preventDefault(); submitQuote();">
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Full Name / PI Name *</label>
+                <input type="text" id="buyer-name" placeholder="Dr. Jane Doe" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Official Email *</label>
+                <input type="email" id="buyer-email" placeholder="lab@institution.edu" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Institution / Company</label>
+                <input type="text" id="buyer-company" placeholder="e.g. IISER Pune" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">City *</label>
+                    <input type="text" id="buyer-city" placeholder="City" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
                 </div>
-            </aside>
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Pincode *</label>
+                    <input type="text" id="buyer-pincode" placeholder="Pincode" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit;">
+                </div>
+            </div>
+
+            <!-- Removed onclick, type remains submit -->
+            <button id="submit-btn" type="submit" style="width: 100%; background: var(--primary-blue); color: white; padding: 14px; border: none; border-radius: 4px; font-weight: 600; font-size: 1rem; cursor: pointer;">
+                Submit Request
+            </button>
+        </form>
+        <!-- END FORM TAG -->
+        
+    </div>
+</aside>
+        
         </div>
     `;
 
     const cartContainer = document.getElementById('cart-items-container');
+    
     if (quoteCart.length === 0) {
         cartContainer.innerHTML = '<p style="color: var(--text-light);">Your quote cart is empty.</p>';
         document.getElementById('submit-btn').disabled = true;
         document.getElementById('submit-btn').style.background = '#cbd5e1';
         return;
     }
+
+    // Un-disable the button if items exist
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('submit-btn').style.background = 'var(--primary-blue)';
 
     quoteCart.forEach(item => {
         const row = document.createElement('div');
@@ -405,20 +419,31 @@ function renderCartPage() {
         row.innerHTML = `
             <span style="font-weight: 500; font-size: 1.1rem;">${item.name}</span>
             <div style="display: flex; align-items: center; gap: 12px;">
-                <button class="qty-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+                <button type="button" class="qty-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
                 <span style="width: 25px; text-align: center; font-weight: bold;">${item.quantity}</span>
-                <button class="qty-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                <button type="button" class="qty-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                
+                <!-- NEW: Delete Button -->
+                <button type="button" onclick="removeItem(${item.id})" style="color: #ef4444; border: none; background: none; cursor: pointer; font-size: 1.2rem;" title="Remove Item">
+                    🗑️
+                </button>
             </div>
         `;
         cartContainer.appendChild(row);
     });
 }
 
-async function submitQuote() {
-    const name = document.getElementById('quote-name').value;
-    const email = document.getElementById('quote-email').value;
-    const city = document.getElementById('quote-city').value;
-    const pincode = document.getElementById('quote-pincode').value;
+async function submitQuote(event) {
+    // 1. Stop the page from blinking/reloading
+    if (event) {
+        event.preventDefault();
+    }
+
+    const name = document.getElementById('buyer-name').value;
+    const email = document.getElementById('buyer-email').value;
+    const city = document.getElementById('buyer-city').value;
+    const pincode = document.getElementById('buyer-pincode').value;
+    const company = document.getElementById('buyer-company').value;
 
     if (!name || !email || !city || !pincode) {
         showToast("Please fill in all contact details.", "error");
@@ -433,11 +458,13 @@ async function submitQuote() {
     const payload = {
         name: name,
         email: email,
+        company: company,
         city: city,
         pincode: pincode,
+        // Map 'qty' from your cart to 'quantity' for FastAPI
         items: quoteCart.map(item => ({
-            product_id: item.id,
-            quantity: item.qty
+            id: item.id,            
+            quantity: item.quantity
         }))
     };
 
@@ -450,9 +477,16 @@ async function submitQuote() {
 
         if (response.ok) {
             showToast("Quote requested successfully!", "success");
-            quoteCart = []; // clear cart
+            
+            // 2. Reset the HTML form fields
+            document.getElementById('quote-form').reset();
+            
+            // 3. Clear cart and update UI
+            quoteCart = []; 
             updateCartCount();
-            renderCart(); // refresh the page
+            
+            // 4. FIXED TYPO: Must be renderCartPage(), not renderCart()
+            renderCartPage(); 
         } else {
             showToast("Failed to submit quote.", "error");
         }
@@ -966,6 +1000,21 @@ document.addEventListener('click', function(event) {
         searchWrapper.style.visibility = 'hidden';
     }
 });
+function removeItem(productId) {
+    // Keep only the items that DO NOT match the deleted product's ID
+    quoteCart = quoteCart.filter(item => item.id !== productId);
+    
+    // FIX: Changed from updateCartCount() to updateCartBadge()
+    updateCartBadge();
+    
+    renderCartPage(); 
+}
+// --- BOOT SEQUENCE ---
+initializeCatalog().then(() => {
+    updateCartBadge();
+    // FIX: This now triggers the router instead of forcing the home page!
+    handleRouting(); 
+});
 // function renderHomePage() {
 //     const contentArea = document.getElementById('app-content');
     
@@ -1155,12 +1204,7 @@ document.addEventListener('click', function(event) {
 //     `;
 // }
 
-// --- BOOT SEQUENCE ---
-initializeCatalog().then(() => {
-    updateCartBadge();
-    // FIX: This now triggers the router instead of forcing the home page!
-    handleRouting(); 
-});
+
 
 //previous thing different design 
 // function viewProduct(productId) {

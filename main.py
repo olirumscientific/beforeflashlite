@@ -1,41 +1,15 @@
 # main.py
-#############################################
-# dashboard thing
-from database import Product
-from pydantic import BaseModel
-from typing import Optional, List
-
-class ProductCreate(BaseModel):
-    name: str
-    price: float
-    category_id: int
-    description: Optional[str] = None
-    specs_html: Optional[str] = None
-    protocol_html: Optional[str] = None
-    support_html: Optional[str] = None
-    download_link: Optional[str] = None
-
-# NEW: Model for editing products so we don't have to submit every field
-class ProductUpdate(BaseModel):
-    name: Optional[str] = None
-    price: Optional[float] = None
-    category_id: Optional[int] = None
-    description: Optional[str] = None
-    specs_html: Optional[str] = None
-    protocol_html: Optional[str] = None
-    support_html: Optional[str] = None
-    download_link: Optional[str] = None
-    is_archived: Optional[bool] = None
-#############################################
-from fastapi import FastAPI, Depends, Header, HTTPException
+from fastapi import FastAPI, Depends, Header, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-import database
+from pydantic import BaseModel
+from typing import Optional, List
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from dotenv import load_dotenv
+import database
 
 load_dotenv() 
 
@@ -64,6 +38,27 @@ def get_db():
         db.close()
 
 # --- PYDANTIC MODELS ---
+class ProductCreate(BaseModel):
+    name: str
+    price: float
+    category_id: int
+    description: Optional[str] = None
+    specs_html: Optional[str] = None
+    protocol_html: Optional[str] = None
+    support_html: Optional[str] = None
+    download_link: Optional[str] = None
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    category_id: Optional[int] = None
+    description: Optional[str] = None
+    specs_html: Optional[str] = None
+    protocol_html: Optional[str] = None
+    support_html: Optional[str] = None
+    download_link: Optional[str] = None
+    is_archived: Optional[bool] = None
+
 class Item(BaseModel):
     id: int
     quantity: int
@@ -85,12 +80,10 @@ def read_root():
 def get_categories(db: Session = Depends(get_db)):
     return db.query(database.Category).all()
 
-# UPDATED: Only return active (non-archived) products for the main catalog
 @app.get("/products")
 def get_products(db: Session = Depends(get_db)):
     return db.query(database.Product).filter(database.Product.is_archived == False).all()
 
-# NEW: Return all products (including archived) for the Admin Dashboard
 @app.get("/admin/products")
 def get_admin_products(db: Session = Depends(get_db)):
     return db.query(database.Product).all()
@@ -99,30 +92,24 @@ def get_admin_products(db: Session = Depends(get_db)):
 def create_product(
     product: ProductCreate, 
     db: Session = Depends(get_db),
-    x_admin_token: str = Header(None)  # FastAPI looks for 'X-Admin-Token' in the request headers
+    x_admin_token: str = Header(None)
 ):
-    # 1. Verify the password
     correct_password = os.getenv("ADMIN_PASSWORD")
     if x_admin_token != correct_password:
         raise HTTPException(status_code=401, detail="Unauthorized: Invalid Admin Password")
     
-    # 2. If the password is correct, proceed with saving to the database
-    new_product = Product(**product.dict())
+    new_product = database.Product(**product.dict())
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
     return {"message": "Product added successfully!", "product_id": new_product.id}
 
-# UPDATED: Edit product using the new ProductUpdate model
 @app.put("/products/{product_id}")
 def update_product(product_id: int, product_update: ProductUpdate, db: Session = Depends(get_db)):
-    # Find the existing product
-    db_product = db.query(Product).filter(Product.id == product_id).first()
-    
+    db_product = db.query(database.Product).filter(database.Product.id == product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    # Update only the fields that were provided (exclude_unset=True)
     update_data = product_update.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_product, key, value)
@@ -131,11 +118,9 @@ def update_product(product_id: int, product_update: ProductUpdate, db: Session =
     db.refresh(db_product)
     return {"message": "Product updated successfully", "product": db_product}
 
-# NEW: Archive product (Soft Delete)
 @app.put("/products/{product_id}/archive")
 def archive_product(product_id: int, db: Session = Depends(get_db)):
-    db_product = db.query(Product).filter(Product.id == product_id).first()
-    
+    db_product = db.query(database.Product).filter(database.Product.id == product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="Product not found")
         
@@ -152,7 +137,6 @@ def send_quote_email(quote_id: int, quote: QuoteSubmit, items_text: str):
     
     company_display = quote.company if quote.company else "Independent Researcher"
 
-    # Formatted email body containing all the new lead information
     body = f"""Hello {quote.name},
     
 Thank you for reaching out to Olirum Scientific. We have received your quote request (Order #{quote_id}).
@@ -191,10 +175,8 @@ The Olirum Scientific Team
         print(f"Failed to send email: {e}")
 
 # --- QUOTE SUBMISSION ---
-@app.post("/quotes")
-def create_quote(quote: QuoteSubmit, db: Session = Depends(get_db)):
-    
-    # CRITICAL: Make sure your database.py QuoteRequest model has these new columns!
+@app.post("/api/quotes")
+def create_quote(quote: QuoteSubmit, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     new_quote = database.QuoteRequest(
         buyer_name=quote.name,
         buyer_email=quote.email, 
@@ -222,7 +204,7 @@ def create_quote(quote: QuoteSubmit, db: Session = Depends(get_db)):
     
     db.commit()
     
-    # Send the email with the full quote object
-    send_quote_email(new_quote.id, quote, email_items_text)
+    # NEW: Send email in the background so the UI doesn't freeze
+    background_tasks.add_task(send_quote_email, new_quote.id, quote, email_items_text)
     
-    return {"message": "Quote received successfully!", "quote_id": new_quote.id}
+    return  {"message": "Quote received successfully! If you do not receive a confirmation email shortly, please reach out to admin@olirumscientific.com.", "quote_id": new_quote.id}
