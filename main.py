@@ -1,11 +1,10 @@
 # main.py
 #############################################
-#dashboard thing
+# dashboard thing
 from database import Product
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
-# This tells FastAPI exactly what data to expect from your Admin Dashboard
 class ProductCreate(BaseModel):
     name: str
     price: float
@@ -15,22 +14,29 @@ class ProductCreate(BaseModel):
     protocol_html: Optional[str] = None
     support_html: Optional[str] = None
     download_link: Optional[str] = None
+
+# NEW: Model for editing products so we don't have to submit every field
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    category_id: Optional[int] = None
+    description: Optional[str] = None
+    specs_html: Optional[str] = None
+    protocol_html: Optional[str] = None
+    support_html: Optional[str] = None
+    download_link: Optional[str] = None
+    is_archived: Optional[bool] = None
 #############################################
-
-
-
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import database
-from pydantic import BaseModel
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from dotenv import load_dotenv
 
-# This physically loads the hidden file into Python's memory
 load_dotenv() 
 
 # --- EMAIL CONFIGURATION ---
@@ -38,7 +44,6 @@ SENDER_EMAIL = os.getenv("EMAIL_ADDRESS")
 SENDER_PASSWORD = os.getenv("EMAIL_PASSWORD")
 SELLER_EMAIL = os.getenv("SELLER_ADDRESS")
 
-# This creates our FastAPI application
 app = FastAPI()
 
 # --- CORS CONFIGURATION ---
@@ -59,15 +64,17 @@ def get_db():
         db.close()
 
 # --- PYDANTIC MODELS ---
-# FIXED: Renamed from CartItem to Item so it matches the list below
 class Item(BaseModel):
     id: int
     quantity: int
 
 class QuoteSubmit(BaseModel):
+    name: str
     email: str
-    company: str | None = None  # Catches the company name
-    items: list[Item]
+    company: str | None = None
+    city: str
+    pincode: str
+    items: List[Item]
 
 # --- ENDPOINTS ---
 @app.get("/")
@@ -78,37 +85,91 @@ def read_root():
 def get_categories(db: Session = Depends(get_db)):
     return db.query(database.Category).all()
 
+# UPDATED: Only return active (non-archived) products for the main catalog
 @app.get("/products")
 def get_products(db: Session = Depends(get_db)):
+    return db.query(database.Product).filter(database.Product.is_archived == False).all()
+
+# NEW: Return all products (including archived) for the Admin Dashboard
+@app.get("/admin/products")
+def get_admin_products(db: Session = Depends(get_db)):
     return db.query(database.Product).all()
+
 @app.post("/products")
-def create_product(product: ProductCreate, db: Session = Depends(get_db)):
-    # Create a new database row using the data from the dashboard
+def create_product(
+    product: ProductCreate, 
+    db: Session = Depends(get_db),
+    x_admin_token: str = Header(None)  # FastAPI looks for 'X-Admin-Token' in the request headers
+):
+    # 1. Verify the password
+    correct_password = os.getenv("ADMIN_PASSWORD")
+    if x_admin_token != correct_password:
+        raise HTTPException(status_code=401, detail="Unauthorized: Invalid Admin Password")
+    
+    # 2. If the password is correct, proceed with saving to the database
     new_product = Product(**product.dict())
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
     return {"message": "Product added successfully!", "product_id": new_product.id}
 
+# UPDATED: Edit product using the new ProductUpdate model
+@app.put("/products/{product_id}")
+def update_product(product_id: int, product_update: ProductUpdate, db: Session = Depends(get_db)):
+    # Find the existing product
+    db_product = db.query(Product).filter(Product.id == product_id).first()
+    
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Update only the fields that were provided (exclude_unset=True)
+    update_data = product_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_product, key, value)
+        
+    db.commit()
+    db.refresh(db_product)
+    return {"message": "Product updated successfully", "product": db_product}
+
+# NEW: Archive product (Soft Delete)
+@app.put("/products/{product_id}/archive")
+def archive_product(product_id: int, db: Session = Depends(get_db)):
+    db_product = db.query(Product).filter(Product.id == product_id).first()
+    
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Product not found")
+        
+    db_product.is_archived = True
+    db.commit()
+    return {"message": f"Product {product_id} archived successfully"}
+
 # --- EMAIL FUNCTION ---
-def send_quote_email(buyer_email: str, quote_id: int, items_text: str, company: str):
-    # FIXED: Re-added the message setup code
+def send_quote_email(quote_id: int, quote: QuoteSubmit, items_text: str):
     msg = MIMEMultipart()
     msg['From'] = SENDER_EMAIL
-    msg['To'] = buyer_email
-    msg['Subject'] = f"Quote Request Confirmation #{quote_id}"
+    msg['To'] = quote.email
+    msg['Subject'] = f"Quote Request Confirmation #{quote_id} - Olirum Scientific"
     
-    # Handle cases where they leave the company blank
-    company_display = company if company else "No Company Provided"
+    company_display = quote.company if quote.company else "Independent Researcher"
 
-    body = f"""Hello!
+    # Formatted email body containing all the new lead information
+    body = f"""Hello {quote.name},
     
-We have received a quote request (Order #{quote_id}) for {company_display}. 
+Thank you for reaching out to Olirum Scientific. We have received your quote request (Order #{quote_id}).
 
-Here is what was requested:
+LEAD DETAILS:
+Name: {quote.name}
+Email: {quote.email}
+Institution: {company_display}
+Location: {quote.city}, {quote.pincode}
+
+REQUESTED ITEMS:
 {items_text}
 
-Our team will review these items and get back to you shortly.
+Our technical sales team will review your requirements and get back to you shortly with pricing and shipping logistics.
+
+Best regards,
+The Olirum Scientific Team
 """
     msg.attach(MIMEText(body, 'plain'))
 
@@ -117,12 +178,12 @@ Our team will review these items and get back to you shortly.
         server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         
-        # Send to the buyer
+        # Send confirmation to the buyer
         server.send_message(msg)
         
-        # Swap the headers and send to the seller (store owner)
+        # Swap headers and send lead alert to you (the seller)
         msg.replace_header('To', SELLER_EMAIL)
-        msg.replace_header('Subject', f"NEW LEAD: Quote #{quote_id} from {company_display}")
+        msg.replace_header('Subject', f"NEW LEAD: Quote #{quote_id} from {quote.name} ({quote.city})")
         server.send_message(msg)
         
         server.quit()
@@ -132,8 +193,15 @@ Our team will review these items and get back to you shortly.
 # --- QUOTE SUBMISSION ---
 @app.post("/quotes")
 def create_quote(quote: QuoteSubmit, db: Session = Depends(get_db)):
-    # Save the company to SQLite
-    new_quote = database.QuoteRequest(buyer_email=quote.email, company=quote.company)
+    
+    # CRITICAL: Make sure your database.py QuoteRequest model has these new columns!
+    new_quote = database.QuoteRequest(
+        buyer_name=quote.name,
+        buyer_email=quote.email, 
+        company=quote.company,
+        city=quote.city,
+        pincode=quote.pincode
+    )
     db.add(new_quote)
     db.commit()
     db.refresh(new_quote)
@@ -154,7 +222,7 @@ def create_quote(quote: QuoteSubmit, db: Session = Depends(get_db)):
     
     db.commit()
     
-    # Pass the company into the email function
-    send_quote_email(quote.email, new_quote.id, email_items_text, quote.company)
+    # Send the email with the full quote object
+    send_quote_email(new_quote.id, quote, email_items_text)
     
     return {"message": "Quote received successfully!", "quote_id": new_quote.id}

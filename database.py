@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 # 1. Setup SQLite Database URL (this creates a file named olirum.db in your project folder)
@@ -43,6 +43,7 @@ class Product(Base):
     specs_html = Column(String, nullable=True)
     support_html = Column(String, nullable=True)
     download_link = Column(String, nullable=True)
+    is_archived = Column(Boolean, default=False)
     
     # Relationship: A product belongs to one category
     category = relationship("Category", back_populates="products")
@@ -52,9 +53,13 @@ class QuoteRequest(Base):
     __tablename__ = "quote_requests"
 
     id = Column(Integer, primary_key=True, index=True)
-    buyer_email = Column(String, index=True)
-    company = Column(String, nullable=True) 
-    
+    buyer_name = Column(String, nullable=False)
+    buyer_email = Column(String, nullable=False)
+    company = Column(String, nullable=True)
+    city = Column(String, nullable=False)
+    pincode = Column(String, nullable=False)
+
+    # This links the quote request to the specific items ordered
     items = relationship("QuoteItem", back_populates="quote")
 
 # 5. Define the QuoteItem Table (The Junction!)

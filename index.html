@@ -8,6 +8,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="Assets/Logo.png">
+    <style>
+        /* Cart Badge Styling */
+        .cart-badge {
+            background-color: #ef4444; /* Notification Red */
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px; /* Creates the perfect pill shape */
+            display: inline-block;
+            min-width: 10px;
+            text-align: center;
+            vertical-align: middle;
+            margin-left: 5px;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+    </style>
 </head>
 <body>
     
@@ -23,11 +40,7 @@
     </a>
 </div>
         
-        <!-- FIX 1: Added the onkeyup event to trigger the search function -->
-        <div class="nav-search">
-            <input type="text" id="search-bar" placeholder="Search products or categories..." onkeyup="handleSearch(event)">
-        </div>
-
+        
         <!-- Hamburger Icon for Mobile -->
         <div class="menu-toggle" id="mobile-menu" onclick="toggleMenu()">
             <span class="bar"></span>
@@ -68,9 +81,19 @@
             </div>
             
             <a href="#all-products">All Products</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#about" >About Us</a>
             <a href="#cart" class="cart-link">
-                Quote Cart <span id="cart-count">0</span>
+                Quote Cart <span id="cart-count" class="cart-badge">0</span>
             </a>
+            <li class="search-container" style="position: relative; display: flex; align-items: center;">
+    <button id="search-icon-btn" onclick="toggleSearch(event)" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #1e40af; padding: 5px;">🔍</button>
+    
+    <!-- The Dropdown Search Bar -->
+    <div id="dynamic-search-wrapper" style="position: absolute; top: 130%; right: 0; width: 0; opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9999; background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+        <input type="text" id="dynamic-search-input" placeholder="Search products..." onkeyup="handleSearch(event)" style="width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; box-sizing: border-box; font-size: 1rem;">
+    </div>
+</li>
         </nav>
     </header>
 
@@ -89,14 +112,14 @@
             <div class="footer-col">
                 <h3>Contact Us</h3>
                 <p>📞 +91 (123) 456-7890</p>
-                <p>✉️ sales@olirumscientific.com</p>
-                <p>📍 Tech Park, Pune, Maharashtra, India</p>
+                <p>✉️ admin@olirumscientific.com</p>
+                <p>📍 AIC SEED, IISER Pune, Maharashtra, India</p>
             </div>
             <div class="footer-col">
                 <h3>Quick Links</h3>
                 <p><a href="#">LinkedIn</a></p>
-                <p><a href="#">Quality Assurance</a></p>
-                <p><a href="#">Privacy Policy</a></p>
+                <!-- <p><a href="#">Quality Assurance</a></p>
+                <p><a href="#">Privacy Policy</a></p> -->
             </div>
         </div>
         <div class="footer-bottom">
