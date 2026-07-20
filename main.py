@@ -4,21 +4,31 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+# --- COMMENTED OUT UNUSED SMTP IMPORTS ---
+# import smtplib
+# from email.mime.text import MIMEText
+# from email.mime.multipart import MIMEMultipart
 import os
 from dotenv import load_dotenv
 import database
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv() 
 
-# --- EMAIL CONFIGURATION ---
-SENDER_EMAIL = os.getenv("EMAIL_ADDRESS")
-SENDER_PASSWORD = os.getenv("EMAIL_PASSWORD")
-SELLER_EMAIL = os.getenv("SELLER_ADDRESS")
+# --- COMMENTED OUT SMTP CONFIGURATION (MIGRATED TO EMAILJS ON FRONTEND) ---
+# SENDER_EMAIL = os.getenv("EMAIL_ADDRESS")
+# SENDER_PASSWORD = os.getenv("EMAIL_PASSWORD")
+# SELLER_EMAIL = os.getenv("SELLER_ADDRESS")
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- CORS CONFIGURATION ---
 app.add_middleware(
@@ -128,72 +138,76 @@ def archive_product(product_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": f"Product {product_id} archived successfully"}
 
-# --- EMAIL FUNCTION ---
-# --- EMAIL FUNCTION ---
-def send_quote_email(quote_id: int, quote: QuoteSubmit, items_text: str):
-    msg = MIMEMultipart()
-    msg['From'] = SENDER_EMAIL
-    msg['To'] = quote.email
-    msg['Subject'] = f"Quote Request Confirmation #{quote_id} - Olirum Scientific"
-    
-    company_display = quote.company if quote.company else "Independent Researcher"
+@app.get("/health")
+def health_check():
+    return {"status": "awake"}
 
-    body = f"""Hello {quote.name},
-    
-Thank you for reaching out to Olirum Scientific. We have received your quote request (Order #{quote_id}).
+# --- COMMENTED OUT BACKEND EMAIL FUNCTION (HANDLED BY FRONTEND EMAILJS NOW) ---
+# def send_quote_email(quote_id: int, quote: QuoteSubmit, items_text: str):
+#     msg = MIMEMultipart()
+#     msg['From'] = SENDER_EMAIL
+#     msg['To'] = quote.email
+#     msg['Subject'] = f"Quote Request Confirmation #{quote_id} - Olirum Scientific"
+#     
+#     company_display = quote.company if quote.company else "Independent Researcher"
+# 
+#     body = f"""Hello {quote.name},
+#     
+# Thank you for reaching out to Olirum Scientific. We have received your quote request (Order #{quote_id}).
+# 
+# LEAD DETAILS:
+# Name: {quote.name}
+# Email: {quote.email}
+# Institution: {company_display}
+# Location: {quote.city}, {quote.pincode}
+# 
+# REQUESTED ITEMS:
+# {items_text}
+# 
+# Our technical sales team will review your requirements and get back to you shortly with pricing and shipping logistics.
+# 
+# Best regards,
+# The Olirum Scientific Team
+# """
+#     msg.attach(MIMEText(body, 'plain'))
+# 
+#     # Default status before trying
+#     email_status = "Pending"
+# 
+#     try:
+#         server = smtplib.SMTP('smtp.gmail.com', 587)
+#         server.starttls()
+#         server.login(SENDER_EMAIL, SENDER_PASSWORD)
+#         
+#         # Send confirmation to the buyer
+#         server.send_message(msg)
+#         
+#         # Swap headers and send lead alert to you (the seller)
+#         msg.replace_header('To', SELLER_EMAIL)
+#         msg.replace_header('Subject', f"NEW LEAD: Quote #{quote_id} from {quote.name} ({quote.city})")
+#         server.send_message(msg)
+#         
+#         server.quit()
+#         email_status = "Email Sent" # Success!
+#         
+#     except Exception as e:
+#         print(f"Failed to send email: {e}")
+#         email_status = "Email Failed" # Network drop or SMTP error
+#         
+#     finally:
+#         # OPEN A FRESH DB SESSION IN THE BACKGROUND THREAD
+#         db = database.SessionLocal()
+#         try:
+#             db_quote = db.query(database.QuoteRequest).filter(database.QuoteRequest.id == quote_id).first()
+#             if db_quote:
+#                 # Update the database with the final outcome
+#                 db_quote.status = email_status
+#                 db.commit()
+#         except Exception as db_e:
+#             print(f"Database update failed in background task: {db_e}")
+#         finally:
+#             db.close()
 
-LEAD DETAILS:
-Name: {quote.name}
-Email: {quote.email}
-Institution: {company_display}
-Location: {quote.city}, {quote.pincode}
-
-REQUESTED ITEMS:
-{items_text}
-
-Our technical sales team will review your requirements and get back to you shortly with pricing and shipping logistics.
-
-Best regards,
-The Olirum Scientific Team
-"""
-    msg.attach(MIMEText(body, 'plain'))
-
-    # Default status before trying
-    email_status = "Pending"
-
-    try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        
-        # Send confirmation to the buyer
-        server.send_message(msg)
-        
-        # Swap headers and send lead alert to you (the seller)
-        msg.replace_header('To', SELLER_EMAIL)
-        msg.replace_header('Subject', f"NEW LEAD: Quote #{quote_id} from {quote.name} ({quote.city})")
-        server.send_message(msg)
-        
-        server.quit()
-        email_status = "Email Sent" # Success!
-        
-    except Exception as e:
-        print(f"Failed to send email: {e}")
-        email_status = "Email Failed" # Network drop or SMTP error
-        
-    finally:
-        # OPEN A FRESH DB SESSION IN THE BACKGROUND THREAD
-        db = database.SessionLocal()
-        try:
-            db_quote = db.query(database.QuoteRequest).filter(database.QuoteRequest.id == quote_id).first()
-            if db_quote:
-                # Update the database with the final outcome
-                db_quote.status = email_status
-                db.commit()
-        except Exception as db_e:
-            print(f"Database update failed in background task: {db_e}")
-        finally:
-            db.close()
 @app.get("/admin/quotes")
 def get_admin_quotes(
     db: Session = Depends(get_db), 
@@ -237,7 +251,7 @@ def create_quote(quote: QuoteSubmit, background_tasks: BackgroundTasks, db: Sess
     
     db.commit()
     
-    # NEW: Send email in the background so the UI doesn't freeze
-    background_tasks.add_task(send_quote_email, new_quote.id, quote, email_items_text)
+    # --- COMMENTED OUT BACKGROUND TASK (NOW DETACHED FROM RENDER SMTP PORT RESTRICTIONS) ---
+    # background_tasks.add_task(send_quote_email, new_quote.id, quote, email_items_text)
     
-    return  {"message": "Quote received successfully! If you do not receive a confirmation email shortly, please reach out to admin@olirumscientific.com.", "quote_id": new_quote.id}
+    return  {"message": "Quote received successfully!", "quote_id": new_quote.id}
