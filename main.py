@@ -156,7 +156,8 @@ def archive_product(
     db_product.is_archived = True
     db.commit()
     return {"message": f"Product {product_id} archived successfully"}
-@app.get("/health" , methods=["GET", "HEAD"])
+@app.get("/health")
+@app.head("/health")
 def health_check():
     return {"status": "awake"}
 
