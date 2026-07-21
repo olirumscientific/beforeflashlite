@@ -43,7 +43,7 @@ function handleRouting() {
 
     const hash = window.location.hash;
 
-    if (!hash || hash === '' || hash === '#home') {
+    if (!hash || hash === '' || hash === '#home' || hash === '#search') {
         navigateTo('home');
     } else if (hash === '#all-products') {
         navigateTo('all-products');
@@ -641,6 +641,11 @@ function handleSearch(event) {
         window.location.hash = '#home';
         navigateTo('home');
         return;
+    }
+
+    // NEW: Update the URL to #search without triggering the router
+    if (window.location.hash !== '#search') {
+        window.history.pushState(null, null, '#search');
     }
 
     // Filter products by name or description
