@@ -115,7 +115,17 @@ def create_product(
     return {"message": "Product added successfully!", "product_id": new_product.id}
 
 @app.put("/products/{product_id}")
-def update_product(product_id: int, product_update: ProductUpdate, db: Session = Depends(get_db)):
+def update_product(
+    product_id: int, 
+    product_update: ProductUpdate, 
+    db: Session = Depends(get_db),
+    x_admin_token: str = Header(None) # Added Header requirement
+):
+    # Added Security Check
+    correct_password = os.getenv("ADMIN_PASSWORD")
+    if x_admin_token != correct_password:
+        raise HTTPException(status_code=401, detail="Unauthorized: Invalid Admin Password")
+        
     db_product = db.query(database.Product).filter(database.Product.id == product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -129,7 +139,16 @@ def update_product(product_id: int, product_update: ProductUpdate, db: Session =
     return {"message": "Product updated successfully", "product": db_product}
 
 @app.put("/products/{product_id}/archive")
-def archive_product(product_id: int, db: Session = Depends(get_db)):
+def archive_product(
+    product_id: int, 
+    db: Session = Depends(get_db),
+    x_admin_token: str = Header(None) # Added Header requirement
+):
+    # Added Security Check
+    correct_password = os.getenv("ADMIN_PASSWORD")
+    if x_admin_token != correct_password:
+        raise HTTPException(status_code=401, detail="Unauthorized: Invalid Admin Password")
+
     db_product = db.query(database.Product).filter(database.Product.id == product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -137,7 +156,6 @@ def archive_product(product_id: int, db: Session = Depends(get_db)):
     db_product.is_archived = True
     db.commit()
     return {"message": f"Product {product_id} archived successfully"}
-
 @app.get("/health")
 def health_check():
     return {"status": "awake"}

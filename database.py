@@ -44,6 +44,8 @@ class Product(Base):
     support_html = Column(String, nullable=True)
     download_link = Column(String, nullable=True)
     is_archived = Column(Boolean, default=False)
+    images = Column(String, default="/images/placeholder.jpg")
+    image_captions = Column(String, default="Product Image")
     
     # Relationship: A product belongs to one category
     category = relationship("Category", back_populates="products")

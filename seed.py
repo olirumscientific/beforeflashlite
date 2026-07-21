@@ -62,56 +62,14 @@ try:
     products = [
         # --- CATEGORY 1: CELLULAR ASSAYS ---
         
-        # Product(
-        #     name="FAVA (Fluorescent Assay for Viability)", 
-        #     price=8500.00, 
-        #     category_id=cat1.id,
-        #     description="High-throughput cellular viability assay utilizing cell-permeable fluorogenic dyes.",
-        #     specs_html="""
-        #         <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
-        #         <p style="margin-bottom: 15px;">This assay utilizes a cell-permeable fluorogenic dye that is converted by intracellular esterases into highly fluorescent calcein within live cells, providing a robust, direct indicator of cell viability.</p>
-        #         <ul style="margin-left: 20px; margin-bottom: 20px;">
-        #             <li><strong>Excitation / Emission:</strong> 490 nm / 525 nm</li>
-        #             <li><strong>Recommended Working Concentration:</strong> 0.5 µM</li>
-        #             <li><strong>Applications:</strong> Microplate reader assays and Epifluorescence microscopy</li>
-        #         </ul>
-        #     """,
-        #     protocol_html="""
-        #         <h4 style="margin-bottom: 5px; color: var(--dark-slate);">1. Reagent Preparation</h4>
-        #         <ul style="margin-left: 20px; margin-bottom: 15px;">
-        #             <li><strong>Stock Solution (1 mM):</strong> Reconstitute the 50 µg vial with 50 µL Dimethyl sulfoxide (DMSO). Mix gently until completely dissolved. Aliquot if necessary and store at −20°C protected from light. Avoid repeated freeze–thaw cycles.</li>
-        #             <li><strong>Working Solution (0.5 µM):</strong> Dilute 1 µL of 1 mM stock into 1999 µL assay buffer, PBS, or serum-free culture medium immediately before use. Protect from light.</li>
-        #         </ul>
-
-        #         <h4 style="margin-bottom: 5px; color: var(--dark-slate);">2. 96-Well Plate Fluorescence Assay</h4>
-        #         <ol style="margin-left: 20px; margin-bottom: 15px;">
-        #             <li><strong>Cell Seeding:</strong> Seed cells at densities of 1 × 10³ – 5 × 10⁵ cells/mL (100 µL per well). Incubate overnight for adherent cell lines to attach.</li>
-        #             <li><strong>Dye Loading:</strong> Remove culture medium if required. Add 100 µL fresh assay buffer, then add the working solution to achieve a final well concentration of 0.5 µM.</li>
-        #             <li><strong>Incubation:</strong> Incubate the plate at 37°C for 30 minutes in the dark. <em>(Typical optimal range: 20 minutes to 1 hour).</em></li>
-        #             <li><strong>Washing:</strong> Remove dye-containing buffer. Wash cells 1–2 times with indicator-free assay buffer to remove excess probe.</li>
-        #             <li><strong>Measurement:</strong> Record fluorescence intensity using a microplate reader (Excitation: 490 nm | Emission: 525 nm | Cutoff: 515 nm).</li>
-        #         </ol>
-        #     """,
-        #     support_html="""
-        #         <h4 style="margin-bottom: 5px; color: var(--dark-slate);">Notes & Optimization</h4>
-        #         <ul style="margin-left: 20px; margin-bottom: 15px;">
-        #             <li><strong>Background Interference:</strong> Phenol red and serum esterases in standard culture media may contribute to background fluorescence. Using clear, serum-free buffers is highly recommended during measurement.</li>
-        #             <li><strong>Protocol Adjustments:</strong> Optimal incubation time varies heavily depending on cell type and density. Note that lower incubation temperatures may reduce proper dye compartmentalization.</li>
-        #         </ul>
-
-        #         <h4 style="margin-bottom: 5px; color: var(--dark-slate);">Quality Control Representative Results</h4>
-        #         <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.6;">
-        #             <li><strong>Figure 1 (Microplate):</strong> Viable cells assessed via plate reader show distinct fluorescence intensity peaks at Ex: 490 nm / Em: 525 nm.</li>
-        #             <li><strong>Figure 2 (Microscopy):</strong> Epifluorescence images demonstrate live cells displaying green fluorescence due to successful intracellular conversion to calcein. (When counterstained with Hoechst, nuclei can be pseudocolored red for morphological clarity using appropriate filter sets).</li>
-        #         </ul>
-        #     """,
-        #     download_link="/downloads/fava-protocol.pdf"
-        # ),
+        
         Product(
     name="DCFDA based ROS Detection Kit", 
     price=12500.00, 
     category_id=cat1.id,
     description="Fluorometric assay for the detection of reactive oxygen species (ROS) in live cells.",
+    images="Assets/dcfda/WT 48H woC ben-dcfda n7_Series002 Snapshot1_ch00.jpg",
+    image_captions="Amber tubes ensure protection for light-sensitive dyes,Assay results demonstrating cell viability over 48 hours,Epifluorescence microscopy overlaid with Hoechst nuclear stain",
     specs_html="""
         <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
         <p style="margin-bottom: 15px;">This kit utilizes the cell-permeable fluorogenic probe 2',7'-dichlorofluorescin diacetate (DCFDA) to reliably measure hydroxyl, peroxyl, and other reactive oxygen species (ROS) activity within live cells.</p>
@@ -155,6 +113,8 @@ try:
             price=180.00, 
             category_id=cat1.id,
             description="Reliable and efficient live-cell viability detection suitable for drug screening and toxicity studies.",
+            images = "Assets/calcein/C2-CalceinAM MCF10CA1a.lif - 2uM.jpg",
+            image_captions="Amber tubes ensure protection for light-sensitive dyes,Assay results demonstrating cell viability over 48 hours,Epifluorescence microscopy overlaid with Hoechst nuclear stain",
             specs_html="""
                 <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
                 <p style="margin-bottom: 15px;">This assay utilizes a cell-permeable fluorogenic dye that is converted by intracellular esterases into highly fluorescent calcein within live cells, providing a robust, direct indicator of cell viability.</p>
@@ -202,6 +162,8 @@ try:
             price=4200.00, 
             category_id=cat2.id,
             description="Anti-fade reagent for prolonged fluorescence preservation.",
+            images = "Assets/mountingnova/C1-microscopy.lif - Series001.jpg,Assets/mountingnova/Composite.jpg",
+            image_captions="Amber tubes ensure protection for light-sensitive dyes,Assay results demonstrating cell viability over 48 hours,Epifluorescence microscopy overlaid with Hoechst nuclear stain",
             specs_html="""
                 <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
                 <p>Our liquid mounting media is formulated to prevent rapid photobleaching of fluorescent proteins and dyes during microscopy. It cures to form a semi-permanent seal, allowing slides to be stored at 4°C for months without signal degradation.</p>
@@ -224,6 +186,8 @@ try:
             price=850.00, 
             category_id=cat2.id,
             description="Self-sealing, hard-setting anti-fade mounting media retaining fluorescence for >5 months.",
+            images ="Assets/supernova/MAX_Gagan R.jpg",
+            image_captions="Amber tubes ensure protection for light-sensitive dyes,Assay results demonstrating cell viability over 48 hours,Epifluorescence microscopy overlaid with Hoechst nuclear stain",
             specs_html="""
                 <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
                 <p style="margin-bottom: 15px;"><strong>Supernova</strong> is a premium self-sealing, hard-setting anti-fade mounting media. Unlike liquid media that require manual sealing with adhesives, Supernova cures into a hardened state, retaining vivid specimen fluorescence for over 5 months from the date of preparation.</p>
@@ -269,6 +233,8 @@ try:
             price=420.00, 
             category_id=cat3.id,
             description="Specialized reagent designed for effective elimination of mycoplasma contamination in cell cultures, whether mild or heavy.",
+            images = "Assets/mark/oflyer.JPG,Assets/mark/CA1a infected.2.jpg,Assets/mark/otreated 2.jpg",
+            image_captions="Amber tubes ensure protection for light-sensitive dyes,Assay results demonstrating cell viability over 48 hours,Epifluorescence microscopy overlaid with Hoechst nuclear stain",
             specs_html="""
                 <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Information & Background</h3>
                 <p style="margin-bottom: 15px;">MaRK is a sterile-filtered, cell culture-tested solution supplied at 10 mg/ml in three amber-colored tubes. It is designed to eradicate mycoplasma—small, cell-wall-lacking microorganisms that compromise cell metabolism and genetic integrity—without affecting mammalian cells.</p>
@@ -318,6 +284,8 @@ try:
             price=18500.00,
             category_id=cat3.id,
             description="Rapid, sensitive qPCR-based detection of up to 178 Mycoplasma species.",
+            images = "Assets/mad/MaD flyer.jpg,Assets/mad/ML 2025-08-15 15h32m09s(Ethidium Bromide).jpg",
+            image_captions="Amber tubes ensure protection for light-sensitive dyes,Assay results demonstrating cell viability over 48 hours,Epifluorescence microscopy overlaid with Hoechst nuclear stain",
             specs_html="""
                 <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
                 <p style="margin-bottom: 15px;">The Olirum MAD™ qPCR-based Mycoplasma Detection Kit enables rapid, sensitive detection of up to 178 Mycoplasma species in cell-culture samples, media, PBS, or other liquid specimens. All qPCR reagents—polymerase, primers, probes, dNTPs, and buffer—are pre-mixed; no additional reagents are needed. The workflow requires only sample pelleting, lysis, and direct qPCR setup.</p>
@@ -392,3 +360,50 @@ except Exception as e:
     print(f"❌ Error during database seeding: {e}")
 finally:
     db.close()
+
+# commented out
+    # Product(
+    #         name="FAVA (Fluorescent Assay for Viability)", 
+    #         price=8500.00, 
+    #         category_id=cat1.id,
+    #         description="High-throughput cellular viability assay utilizing cell-permeable fluorogenic dyes.",
+    #         specs_html="""
+    #             <h3 style="margin-bottom: 10px; color: var(--dark-slate);">Product Overview</h3>
+    #             <p style="margin-bottom: 15px;">This assay utilizes a cell-permeable fluorogenic dye that is converted by intracellular esterases into highly fluorescent calcein within live cells, providing a robust, direct indicator of cell viability.</p>
+    #             <ul style="margin-left: 20px; margin-bottom: 20px;">
+    #                 <li><strong>Excitation / Emission:</strong> 490 nm / 525 nm</li>
+    #                 <li><strong>Recommended Working Concentration:</strong> 0.5 µM</li>
+    #                 <li><strong>Applications:</strong> Microplate reader assays and Epifluorescence microscopy</li>
+    #             </ul>
+    #         """,
+    #         protocol_html="""
+    #             <h4 style="margin-bottom: 5px; color: var(--dark-slate);">1. Reagent Preparation</h4>
+    #             <ul style="margin-left: 20px; margin-bottom: 15px;">
+    #                 <li><strong>Stock Solution (1 mM):</strong> Reconstitute the 50 µg vial with 50 µL Dimethyl sulfoxide (DMSO). Mix gently until completely dissolved. Aliquot if necessary and store at −20°C protected from light. Avoid repeated freeze–thaw cycles.</li>
+    #                 <li><strong>Working Solution (0.5 µM):</strong> Dilute 1 µL of 1 mM stock into 1999 µL assay buffer, PBS, or serum-free culture medium immediately before use. Protect from light.</li>
+    #             </ul>
+
+    #             <h4 style="margin-bottom: 5px; color: var(--dark-slate);">2. 96-Well Plate Fluorescence Assay</h4>
+    #             <ol style="margin-left: 20px; margin-bottom: 15px;">
+    #                 <li><strong>Cell Seeding:</strong> Seed cells at densities of 1 × 10³ – 5 × 10⁵ cells/mL (100 µL per well). Incubate overnight for adherent cell lines to attach.</li>
+    #                 <li><strong>Dye Loading:</strong> Remove culture medium if required. Add 100 µL fresh assay buffer, then add the working solution to achieve a final well concentration of 0.5 µM.</li>
+    #                 <li><strong>Incubation:</strong> Incubate the plate at 37°C for 30 minutes in the dark. <em>(Typical optimal range: 20 minutes to 1 hour).</em></li>
+    #                 <li><strong>Washing:</strong> Remove dye-containing buffer. Wash cells 1–2 times with indicator-free assay buffer to remove excess probe.</li>
+    #                 <li><strong>Measurement:</strong> Record fluorescence intensity using a microplate reader (Excitation: 490 nm | Emission: 525 nm | Cutoff: 515 nm).</li>
+    #             </ol>
+    #         """,
+    #         support_html="""
+    #             <h4 style="margin-bottom: 5px; color: var(--dark-slate);">Notes & Optimization</h4>
+    #             <ul style="margin-left: 20px; margin-bottom: 15px;">
+    #                 <li><strong>Background Interference:</strong> Phenol red and serum esterases in standard culture media may contribute to background fluorescence. Using clear, serum-free buffers is highly recommended during measurement.</li>
+    #                 <li><strong>Protocol Adjustments:</strong> Optimal incubation time varies heavily depending on cell type and density. Note that lower incubation temperatures may reduce proper dye compartmentalization.</li>
+    #             </ul>
+
+    #             <h4 style="margin-bottom: 5px; color: var(--dark-slate);">Quality Control Representative Results</h4>
+    #             <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.6;">
+    #                 <li><strong>Figure 1 (Microplate):</strong> Viable cells assessed via plate reader show distinct fluorescence intensity peaks at Ex: 490 nm / Em: 525 nm.</li>
+    #                 <li><strong>Figure 2 (Microscopy):</strong> Epifluorescence images demonstrate live cells displaying green fluorescence due to successful intracellular conversion to calcein. (When counterstained with Hoechst, nuclei can be pseudocolored red for morphological clarity using appropriate filter sets).</li>
+    #             </ul>
+    #         """,
+    #         download_link="/downloads/fava-protocol.pdf"
+    #     ),
