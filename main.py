@@ -236,10 +236,28 @@ def get_admin_quotes(
     if x_admin_token != correct_password:
         raise HTTPException(status_code=401, detail="Unauthorized: Invalid Admin Password")
     
-    # Fetches all quotes, ordering them so the newest ones are at the top
+    # Fetch all quotes, newest first
     quotes = db.query(database.QuoteRequest).order_by(database.QuoteRequest.id.desc()).all()
-    return quotes
-
+    
+    quote_list = []
+    for quote in quotes:
+        items_requested = []
+        # Loop through the connected items to get their names and quantities
+        for item in quote.items:
+            product = db.query(database.Product).filter(database.Product.id == item.product_id).first()
+            prod_name = product.name if product else "Unknown Product"
+            items_requested.append(f"{item.quantity}x {prod_name}")
+            
+        quote_list.append({
+            "id": quote.id,
+            "buyer_name": quote.buyer_name,
+            "buyer_email": quote.buyer_email,
+            "company": quote.company,
+            "status": quote.status,
+            "items_summary": ", ".join(items_requested) # Joins them into a clean string
+        })
+        
+    return quote_list
 # --- QUOTE SUBMISSION ---
 @app.post("/api/quotes")
 def create_quote(quote: QuoteSubmit, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
